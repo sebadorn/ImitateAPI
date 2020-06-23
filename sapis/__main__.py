@@ -1,9 +1,9 @@
 # Native modules
 import argparse, sys
-from http import server
 
 # Project modules
-
+from . import localhttp
+from . import localhttps
 
 
 if __name__ == '__main__':
@@ -42,8 +42,9 @@ if __name__ == '__main__':
 	else:
 		print( 'No API has been selected.' )
 
-	print( 'A local HTTP server will be available under: http://127.0.0.1:%d' % args.port )
-	print( '----------' )
+	if args.server is 'https':
+		server = localhttps.localserver( args.port )
+	else:
+		server = localhttp.localserver( args.port )
 
-	httpd = server.HTTPServer( ( '', args.port ), server.BaseHTTPRequestHandler )
-	httpd.serve_forever()
+	server.start()
