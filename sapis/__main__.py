@@ -2,6 +2,7 @@
 import argparse, sys
 
 # Project modules
+from . import api
 from . import localhttp
 from . import localhttps
 
@@ -29,6 +30,13 @@ if __name__ == '__main__':
 		dest = 'api'
 	)
 	parser.add_argument(
+		'--api-files-dir',
+		default = './api-files',
+		required = False,
+		help = 'The directory to search for API files.',
+		dest = 'api_files_dir'
+	)
+	parser.add_argument(
 		'-l', '--list',
 		action = 'store_true',
 		required = False,
@@ -36,6 +44,12 @@ if __name__ == '__main__':
 		dest = 'list'
 	)
 	args = parser.parse_args( sys.argv[1:] )
+
+	apiManager = api.APIManager( args.api_files_dir )
+
+	if args.list:
+		apiManager.print_available()
+		sys.exit()
 
 	if args.api:
 		print( 'Simulating API: %s' % args.api )
