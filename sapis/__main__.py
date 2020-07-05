@@ -51,8 +51,11 @@ if __name__ == '__main__':
 		apiManager.print_available()
 		sys.exit()
 
+	api_rules = None
+
 	if args.api:
 		print( 'Simulating API: %s' % args.api )
+		api_rules = apiManager.load_api( args.api )
 	else:
 		print( 'No API has been selected.' )
 
@@ -61,4 +64,5 @@ if __name__ == '__main__':
 	else:
 		server = localhttp.localserver( args.port )
 
+	server.set_api( api_rules )
 	server.start()

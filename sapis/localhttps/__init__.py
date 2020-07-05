@@ -5,5 +5,9 @@ class localserver:
 		pass
 
 
+	def set_api( self, api ):
+		pass
+
+
 	def start( self ):
 		pass
