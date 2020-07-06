@@ -1,4 +1,4 @@
-import json, os
+import json, os, re
 
 
 
@@ -6,6 +6,11 @@ class APIManager:
 
 
 	def __init__( self, api_dir ):
+		"""
+		Parameters:
+		api_dir (str) -- Path to the directory where API files are located.
+		"""
+
 		self._directory = api_dir
 		self._available = {}
 
@@ -19,6 +24,11 @@ class APIManager:
 
 
 	def load_api( self, name ):
+		"""
+		Parameters:
+		name (str) -- Directory name of the API to load.
+		"""
+
 		info = self._available.get( name )
 		json_file_path = os.path.join( info.get( 'path' ), 'rules.json' )
 
@@ -28,6 +38,11 @@ class APIManager:
 		with open( json_file_path ) as f:
 			content = f.read()
 
+		# Allow lines with comments if they start with "//".
+		# Remove those here, so the JSON can be parsed.
+		p = re.compile( '^[\t ]*//.*', re.MULTILINE )
+		content = p.sub( '', content )
+
 		api_dict = json.loads( content )
 		rules = APIRuleSet( api_dict )
 
@@ -35,6 +50,11 @@ class APIManager:
 
 
 	def read_from_dir( self, api_dir ):
+		"""
+		Parameters:
+		api_dir (str) --
+		"""
+
 		api_list = []
 		found_names = []
 
@@ -86,6 +106,11 @@ class APIRuleSet:
 
 
 	def __init__( self, data ):
+		"""
+		Parameters:
+		data (dict) --
+		"""
+
 		self._data = data
 
 
@@ -117,6 +142,13 @@ class APIRuleSet:
 
 
 	def getFirstMatchingRule( self, req_method, req_path, req_headers ):
+		"""
+		Parameters:
+		req_method  (str)  --
+		req_path    (str)  --
+		req_headers (dict) --
+		"""
+
 		data_rules = self._data.get( 'rules' )
 		matching_rule = None
 

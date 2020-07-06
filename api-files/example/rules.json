@@ -1,0 +1,46 @@
+{
+	// Single line comments starting with "//" are possible,
+	// if they are the only thing in the line.
+	// Before parsing the JSON, these lines will be removed.
+
+	// Information about the rule file and API to be simulated.
+	// Every attribute inside and the "info" attribute itself
+	// are optional.
+	"info": {
+		"name": "Example",
+		"author": "Sebastian Dorn",
+		"description": "Example file for the possible options of a simulated API.",
+		"last_update": "2020-07-06"
+	},
+
+	// Base rules which will always be applied
+	// if not overwritten by a specific rule.
+	// Optional.
+	"base": {
+		"auth": {
+			"type": "basic",
+			"users": [
+				{
+					"user": "user1",
+					"pass": "pwd123"
+				}
+			]
+		}
+	},
+
+	// Specific rules.
+	// Required.
+	"rules": [
+		{
+			"methods": ["GET"],
+			"path": "/test",
+			"response": {
+				"status": 200,
+				"headers": {
+					"Content-Type": "text/plain"
+				},
+				"message": "lorem ipsum"
+			}
+		}
+	]
+}
