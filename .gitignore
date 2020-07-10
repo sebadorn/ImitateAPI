@@ -1,6 +1,9 @@
 # Files
+*.crt
+*.key
 *.pyc
 *.sublime-*
+/NOTES.md
 
 # Directories
 __pycache__

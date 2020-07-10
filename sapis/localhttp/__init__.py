@@ -5,7 +5,7 @@ from http import server
 class APIRequestHandler( server.BaseHTTPRequestHandler ):
 
 
-	def _handle_method( self, method ):
+	def _handle_method( self ):
 		if self.server.sapis_rules:
 			status, message, headers = self.server.sapis_rules.getRequestResponse( self )
 
@@ -20,54 +20,66 @@ class APIRequestHandler( server.BaseHTTPRequestHandler ):
 
 
 	def do_CONNECT( self ):
-		pass
+		self._handle_method()
 
 
 	def do_DELETE( self ):
-		self._handle_method( 'DELETE' )
+		self._handle_method()
 
 
 	def do_GET( self ):
-		self._handle_method( 'GET' )
+		self._handle_method()
 
 
 	def do_HEAD( self ):
-		pass
+		self._handle_method()
 
 
 	def do_OPTIONS( self ):
-		pass
+		self._handle_method()
 
 
 	def do_PATCH( self ):
-		pass
+		self._handle_method()
 
 
 	def do_POST( self ):
-		self._handle_method( 'POST' )
+		self._handle_method()
 
 
 	def do_PUT( self ):
-		self._handle_method( 'PUT' )
+		self._handle_method()
 
 
 	def do_TRACE( self ):
-		pass
+		self._handle_method()
 
 
 
 class localserver:
 
 
-	def __init__( self, port = 8000 ):
+	def __init__( self, port ):
+		"""
+		Parameters:
+		port (int) -- Port to run the local server on.
+		"""
+
 		self.httpd = server.HTTPServer( ( '', port ), APIRequestHandler )
 
 
 	def set_api( self, api ):
+		"""
+		Parameters:
+		api (api.APIRuleSet) --
+		"""
+
 		self.httpd.sapis_rules = api
 
 
 	def start( self ):
+		""" Start the local server. """
+
 		print( 'A local HTTP server will be available under: http://127.0.0.1:%d' % self.httpd.server_port )
 		print( '----------' )
 		self.httpd.serve_forever()

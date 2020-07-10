@@ -1,4 +1,4 @@
-# Native modules
+# Builtin modules
 import argparse, sys
 
 # Project modules
@@ -15,6 +15,18 @@ if __name__ == '__main__':
 		choices = ['http', 'https'],
 		required = False,
 		dest = 'server'
+	)
+	parser.add_argument(
+		'--ssl-certfile',
+		required = False,
+		help = 'Path to the SSL certificate file. Only used if a local HTTPS server is used.',
+		dest = 'ssl_certfile'
+	)
+	parser.add_argument(
+		'--ssl-keyfile',
+		required = False,
+		help = 'Path to the SSL key file. Only used if a local HTTPS server is used.',
+		dest = 'ssl_keyfile'
 	)
 	parser.add_argument(
 		'-p', '--port',
@@ -59,8 +71,12 @@ if __name__ == '__main__':
 	else:
 		print( 'No API has been selected.' )
 
-	if args.server is 'https':
-		server = localhttps.localserver( args.port )
+	if args.server == 'https':
+		server = localhttps.localserver(
+			port = args.port,
+			certfile = args.ssl_certfile,
+			keyfile = args.ssl_keyfile
+		)
 	else:
 		server = localhttp.localserver( args.port )
 
