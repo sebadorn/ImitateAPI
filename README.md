@@ -9,17 +9,7 @@
 
 ## Install
 
-Using `pip3`:
-
-```bash
-pip3 install imitate-api
-```
-
-or
-
-```bash
-python3 -m pip install imitate-api
-```
+_[tbd]_
 
 
 ## Resources
