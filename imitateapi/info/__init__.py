@@ -1,4 +1,4 @@
-import argparse
+from argparse import ArgumentParser
 
 
 
@@ -19,7 +19,7 @@ def get_parser():
 	argparse.ArgumentParser
 	"""
 
-	parser = argparse.ArgumentParser( description = 'Imitate API -- A simple API simulator.' )
+	parser = ArgumentParser( description = 'Imitate API -- A simple API simulator.' )
 	parser.add_argument(
 		'-s', '--server',
 		default = 'http',

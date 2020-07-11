@@ -9,6 +9,10 @@ from . import localhttps
 
 
 
+def cleanup():
+	pass
+
+
 if __name__ == '__main__':
 	parser = info.get_parser()
 	args = parser.parse_args( sys.argv[1:] )
@@ -42,3 +46,5 @@ if __name__ == '__main__':
 
 	server.set_api( api_rules )
 	server.start()
+
+	cleanup()

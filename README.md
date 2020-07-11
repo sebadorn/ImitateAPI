@@ -4,7 +4,7 @@
 ## Requirements
 
 * openssl -- but only if SSL certificates for localhost have to be generated
-* python3 -- version 3.5 or higher, tested with 3.6.9
+* python3 -- version 3.5 or higher
 
 
 ## Install
