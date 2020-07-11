@@ -6,5 +6,8 @@
 /NOTES.md
 
 # Directories
+*.egg-info
+/build
+/dist
 __pycache__
 api-files/__private

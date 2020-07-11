@@ -8,7 +8,7 @@ from . import localhttps
 
 
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser( description = 'Simple API Simulator' )
+	parser = argparse.ArgumentParser( description = 'Imitate API -- A simple API simulator.' )
 	parser.add_argument(
 		'-s', '--server',
 		default = 'http',
