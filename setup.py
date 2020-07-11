@@ -1,21 +1,26 @@
 import setuptools
 
+from imitateapi import info
+
 
 with open( 'README.md', 'r' ) as file:
 	long_description = file.read()
 
 
 setuptools.setup(
-	name = 'imitate-api',
-	version = '0.1.0',
+	name = 'imitateapi',
+	version = info.get_version(),
 	author = 'Sebastian Dorn',
 	author_email = 'sebadorn+pypi@posteo.de',
 	description = 'Simulate how an API works.',
 	license = 'MIT',
 	long_description = long_description,
 	long_description_content_type = 'text/markdown',
-	url = 'https://github.com/sebadorn/imitate-api',
+	url = 'https://github.com/sebadorn/imitateapi',
 	packages = setuptools.find_packages(),
+	package_data = {
+		'': ['*.txt']
+	},
 	classifiers = [
 		'Development Status :: 3 - Alpha',
 		'Intended Audience :: Developers',

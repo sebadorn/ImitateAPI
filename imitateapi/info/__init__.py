@@ -1,13 +1,24 @@
-# Builtin modules
-import argparse, sys
-
-# Project modules
-from . import api
-from . import localhttp
-from . import localhttps
+import argparse
 
 
-if __name__ == '__main__':
+
+def get_version():
+	"""
+	Returns
+	-------
+	str
+	"""
+
+	return '0.1.0'
+
+
+def get_parser():
+	"""
+	Returns
+	-------
+	argparse.ArgumentParser
+	"""
+
 	parser = argparse.ArgumentParser( description = 'Imitate API -- A simple API simulator.' )
 	parser.add_argument(
 		'-s', '--server',
@@ -55,30 +66,12 @@ if __name__ == '__main__':
 		help = 'List the available APIs to use with the -a argument and exit.',
 		dest = 'list'
 	)
-	args = parser.parse_args( sys.argv[1:] )
+	parser.add_argument(
+		'-v', '--version',
+		action = 'store_true',
+		required = False,
+		help = 'Print the module version and exit.',
+		dest = 'version'
+	)
 
-	apiManager = api.APIManager( args.api_files_dir )
-
-	if args.list:
-		apiManager.print_available()
-		sys.exit()
-
-	api_rules = None
-
-	if args.api:
-		print( 'Simulating API: %s' % args.api )
-		api_rules = apiManager.load_api( args.api )
-	else:
-		print( 'No API has been selected.' )
-
-	if args.server == 'https':
-		server = localhttps.localserver(
-			port = args.port,
-			certfile = args.ssl_certfile,
-			keyfile = args.ssl_keyfile
-		)
-	else:
-		server = localhttp.localserver( args.port )
-
-	server.set_api( api_rules )
-	server.start()
+	return parser

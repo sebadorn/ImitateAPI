@@ -22,13 +22,6 @@ python3 -m pip install imitate-api
 ```
 
 
-## Build
-
-```bash
-python3 setup.py bdist_wheel
-```
-
-
 ## Resources
 
 * https://blog.anvileight.com/posts/simple-python-http-server/
