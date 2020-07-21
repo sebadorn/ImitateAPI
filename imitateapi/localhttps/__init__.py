@@ -1,4 +1,4 @@
-# Builtin modules
+# Built-in modules
 from http import server
 import os, ssl, subprocess, tempfile
 

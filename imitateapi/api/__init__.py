@@ -1,4 +1,4 @@
-import json, os, re
+import json, mimetypes, os, re
 
 
 
@@ -10,6 +10,8 @@ class APIManager:
 		Parameters:
 		api_dir (str) -- Path to the directory where API files are located.
 		"""
+
+		mimetypes.init()
 
 		self._directory = api_dir
 		self._available = {}
@@ -44,7 +46,7 @@ class APIManager:
 		content = p.sub( '', content )
 
 		api_dict = json.loads( content )
-		rules = APIRuleSet( api_dict )
+		rules = APIRuleSet( info.get( 'path' ), api_dict )
 
 		return rules
 
@@ -105,43 +107,47 @@ class APIManager:
 class APIRuleSet:
 
 
-	def __init__( self, data ):
+	def __init__( self, api_dir, data ):
 		"""
 		Parameters:
-		data (dict) --
+		api_dir (str)  --
+		data    (dict) --
 		"""
 
+		self._dir = api_dir
 		self._data = data
 
 
-	def getRequestResponse( self, requestHandler ):
+	def _get_response_include( self, rule_response ):
 		"""
 		Parameters:
-		requestHandler (APIRequestHandler) -- The request handler instance.
+		rule_response (dict) --
 		"""
 
-		res_status = 500
-		res_message = ''
-		res_headers = None
+		include_file = rule_response.get( 'include' )
+		include_file = os.path.join( self._dir, include_file )
 
-		req_method = requestHandler.command
-		req_path = requestHandler.path
-		req_headers = requestHandler.headers
+		content = None
+		content_type = mimetypes.guess_type( include_file )[0]
 
-		rule = self.getFirstMatchingRule( req_method, req_path, req_headers )
+		mode = 'rb'
 
-		if rule:
-			rule_response = rule.get( 'response' )
+		if content_type.startswith( 'text/' ):
+			mode = 'r'
 
-			if rule_response:
-				res_status = rule_response.get( 'status' )
-				res_message = rule_response.get( 'message' )
-				res_headers = rule_response.get( 'headers' )
+		with open( include_file, mode = mode ) as file:
+			content = file.read()
 
-		return res_status, res_message, res_headers
+		if 'headers' in rule_response:
+			headers = rule_response.get( 'headers' )
+
+			if 'Content-Type' in headers:
+				content_type = None
+
+		return content, content_type
 
 
-	def getFirstMatchingRule( self, req_method, req_path, req_headers ):
+	def get_first_matching_rule( self, req_method, req_path, req_headers ):
 		"""
 		Parameters:
 		req_method  (str)  --
@@ -167,3 +173,56 @@ class APIRuleSet:
 			break
 
 		return matching_rule
+
+
+	def get_request_response( self, request_handler ):
+		"""
+		Parameters:
+		request_handler (APIRequestHandler) -- The request handler instance.
+		"""
+
+		res_status = 500
+		res_message = ''
+		res_headers = None
+
+		req_method = request_handler.command
+		req_path = request_handler.path
+		req_headers = request_handler.headers
+
+		rule = self.get_first_matching_rule( req_method, req_path, req_headers )
+
+		if rule and 'response' in rule:
+			rule_response = rule.get( 'response' )
+
+			# 1. Set status code.
+			if 'status' in rule_response:
+				res_status = rule_response.get( 'status' )
+
+			# 2. Set headers.
+			if 'headers' in rule_response:
+				res_headers = rule_response.get( 'headers' )
+
+			# 3a. Set body/message.
+			if 'message' in rule_response:
+				res_message = rule_response.get( 'message' )
+			# 3b. Set body/message from a file.
+			elif 'include' in rule_response:
+				content, content_type = self._get_response_include( rule_response )
+
+				if content is not None:
+					res_message = content
+
+					# If response.status is not set and
+					# the file is found, return code 200.
+					if 'status' not in rule_response:
+						res_status = 200
+
+				# If reponse.headers.Content-Type is not given and the
+				# file is found guess the mimetype and set it as header.
+				if content_type is not None:
+					if res_headers is None:
+						res_headers = {}
+
+					res_headers['Content-Type'] = content_type
+
+		return res_status, res_message, res_headers

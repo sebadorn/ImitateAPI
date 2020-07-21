@@ -7,7 +7,7 @@ class APIRequestHandler( server.BaseHTTPRequestHandler ):
 
 	def _handle_method( self ):
 		if self.server.sapis_rules:
-			status, message, headers = self.server.sapis_rules.getRequestResponse( self )
+			status, message, headers = self.server.sapis_rules.get_request_response( self )
 
 			if headers:
 				for key in headers:
@@ -82,4 +82,9 @@ class localserver:
 
 		print( 'A local HTTP server will be available under: http://127.0.0.1:%d' % self.httpd.server_port )
 		print( '----------' )
-		self.httpd.serve_forever()
+
+		try:
+			self.httpd.serve_forever()
+		except KeyboardInterrupt:
+			print( '\n----------' )
+			print( 'Application has been terminated by user.' )

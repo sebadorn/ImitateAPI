@@ -1,4 +1,4 @@
-# Imitate API
+# ImitateAPI
 
 
 ## Requirements

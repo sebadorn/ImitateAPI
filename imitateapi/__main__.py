@@ -1,4 +1,4 @@
-# Builtin modules
+# Built-in modules
 import sys
 
 # Project modules
@@ -7,10 +7,6 @@ from . import info
 from . import localhttp
 from . import localhttps
 
-
-
-def cleanup():
-	pass
 
 
 if __name__ == '__main__':
@@ -46,5 +42,3 @@ if __name__ == '__main__':
 
 	server.set_api( api_rules )
 	server.start()
-
-	cleanup()
