@@ -1,5 +1,7 @@
 # ImitateAPI
 
+NOT INTENDED FOR USE IN PRODUCTION. This application was created with development and testing in mind.
+
 
 ## Requirements
 

@@ -1,4 +1,4 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 
 
@@ -19,7 +19,15 @@ def get_parser():
 	argparse.ArgumentParser
 	"""
 
-	parser = ArgumentParser( description = 'ImitateAPI -- A simple API simulator.' )
+	parser = ArgumentParser(
+		formatter_class = RawDescriptionHelpFormatter,
+		description = (
+			'ImitateAPI -- A simple API simulator.\n'
+			'-------------------------------------\n'
+			'NOT INTENDED FOR USE IN PRODUCTION. This application was created with development and testing in mind.\n'
+			'-------------------------------------'
+		)
+	)
 	parser.add_argument(
 		'-s', '--server',
 		default = 'http',

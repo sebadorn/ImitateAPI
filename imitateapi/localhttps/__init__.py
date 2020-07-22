@@ -64,7 +64,7 @@ class localserver( localhttp.localserver ):
 		if not certfile or not keyfile:
 			certfile, keyfile = create_localhost_cert()
 
-		self.httpd = server.HTTPServer( ( '', port ), localhttp.APIRequestHandler )
+		self.httpd = server.ThreadingHTTPServer( ( '', port ), localhttp.APIRequestHandler )
 
 		self.httpd.socket = ssl.wrap_socket(
 			self.httpd.socket,

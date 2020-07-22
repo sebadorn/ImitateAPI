@@ -130,12 +130,7 @@ class APIRuleSet:
 		content = None
 		content_type = mimetypes.guess_type( include_file )[0]
 
-		mode = 'rb'
-
-		if content_type.startswith( 'text/' ):
-			mode = 'r'
-
-		with open( include_file, mode = mode ) as file:
+		with open( include_file, mode = 'rb' ) as file:
 			content = file.read()
 
 		if 'headers' in rule_response:
@@ -224,5 +219,11 @@ class APIRuleSet:
 						res_headers = {}
 
 					res_headers['Content-Type'] = content_type
+
+		if res_headers is None:
+			res_headers = {}
+
+		if 'Content-Length' not in res_headers:
+			res_headers['Content-Length'] = len( res_message )
 
 		return res_status, res_message, res_headers

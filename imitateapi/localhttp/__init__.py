@@ -1,20 +1,30 @@
+# Built-in modules
 from http import server
 
+# Project modules
+from .. import info
 
 
-class APIRequestHandler( server.BaseHTTPRequestHandler ):
+
+class APIRequestHandler( server.SimpleHTTPRequestHandler ):
 
 
 	def _handle_method( self ):
+		self.server_version = 'ImitateAPI/' + info.get_version()
+
 		if self.server.sapis_rules:
 			status, message, headers = self.server.sapis_rules.get_request_response( self )
+
+			self.send_response( status )
 
 			if headers:
 				for key in headers:
 					self.send_header( key, headers.get( key ) )
 
-			self.send_response( status, message )
 			self.end_headers()
+
+			if self.command != 'HEAD':
+				self.wfile.write( message )
 		else:
 			self.end_headers()
 
@@ -65,7 +75,7 @@ class localserver:
 		port (int) -- Port to run the local server on.
 		"""
 
-		self.httpd = server.HTTPServer( ( '', port ), APIRequestHandler )
+		self.httpd = server.ThreadingHTTPServer( ( '', port ), APIRequestHandler )
 
 
 	def set_api( self, api ):
