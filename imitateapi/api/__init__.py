@@ -130,6 +130,14 @@ class APIRuleSet:
 		content = None
 		content_type = mimetypes.guess_type( include_file )[0]
 
+		if (
+			content_type.startswith( 'text/' ) or
+			content_type.endswith( '/html' ) or
+			content_type.endswith( '/json' ) or
+			content_type.endswith( '/xml' )
+		):
+			content_type += '; charset=utf-8'
+
 		with open( include_file, mode = 'rb' ) as file:
 			content = file.read()
 
@@ -177,7 +185,7 @@ class APIRuleSet:
 		"""
 
 		res_status = 500
-		res_message = ''
+		res_message = None
 		res_headers = None
 
 		req_method = request_handler.command
@@ -220,10 +228,14 @@ class APIRuleSet:
 
 					res_headers['Content-Type'] = content_type
 
+		# Convert str to bytes-like object.
+		if isinstance( res_message, str ):
+			res_message = str.encode( res_message )
+
 		if res_headers is None:
 			res_headers = {}
 
-		if 'Content-Length' not in res_headers:
+		if 'Content-Length' not in res_headers and res_message is not None:
 			res_headers['Content-Length'] = len( res_message )
 
 		return res_status, res_message, res_headers

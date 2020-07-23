@@ -23,7 +23,7 @@ class APIRequestHandler( server.SimpleHTTPRequestHandler ):
 
 			self.end_headers()
 
-			if self.command != 'HEAD':
+			if self.command != 'HEAD' and message is not None:
 				self.wfile.write( message )
 		else:
 			self.end_headers()
