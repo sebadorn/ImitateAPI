@@ -10,7 +10,7 @@
 		"name": "Example",
 		"author": "Sebastian Dorn",
 		"description": "Example file for the possible options of a simulated API.",
-		"last_update": "2020-07-21"
+		"last_update": "2020-07-24"
 	},
 
 	// Base rules which will always be applied
@@ -35,10 +35,6 @@
 			"methods": ["GET"],
 			"path": "/test",
 			"response": {
-				"status": 200,
-				"headers": {
-					"Content-Type": "text/plain; charset=utf-8"
-				},
 				"message": "🙂🙂 lorem ipsum 🙂🙂🙂"
 			}
 		},
@@ -47,6 +43,14 @@
 			"path": "/get_file",
 			"response": {
 				"include": "get_file.txt"
+			}
+		},
+		{
+			"methods": ["GET"],
+			"path": "/download",
+			"response": {
+				"download": "get_file.txt",
+				"name": "New name 😉.txt"
 			}
 		}
 	]

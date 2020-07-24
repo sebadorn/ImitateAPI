@@ -2,10 +2,10 @@
 import sys
 
 # Project modules
-from . import api
+from .api.manager import APIManager
 from . import info
-from . import localhttp
-from . import localhttps
+from .localhttp.localserver import LocalServerHTTP
+from .localhttps.localserver import LocalServerHTTPS
 
 
 
@@ -17,7 +17,7 @@ if __name__ == '__main__':
 		print( 'Version: %s' % info.get_version() )
 		sys.exit()
 
-	apiManager = api.APIManager( args.api_files_dir )
+	apiManager = APIManager( args.api_files_dir )
 
 	if args.list:
 		apiManager.print_available()
@@ -32,13 +32,13 @@ if __name__ == '__main__':
 		print( 'No API has been selected.' )
 
 	if args.server == 'https':
-		server = localhttps.localserver(
+		server = LocalServerHTTPS(
 			port = args.port,
 			certfile = args.ssl_certfile,
 			keyfile = args.ssl_keyfile
 		)
 	else:
-		server = localhttp.localserver( args.port )
+		server = LocalServerHTTP( args.port )
 
 	server.set_api( api_rules )
 	server.start()

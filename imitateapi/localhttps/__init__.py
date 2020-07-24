@@ -1,10 +1,5 @@
 # Built-in modules
-from http import server
-import os, ssl, subprocess, tempfile
-
-# Project modules
-from .. import info
-from .. import localhttp
+import os, subprocess, tempfile
 
 
 
@@ -47,36 +42,3 @@ def create_localhost_cert():
 		os.unlink( configfile.name )
 
 	return certfile, keyfile
-
-
-
-class localserver( localhttp.localserver ):
-
-
-	def __init__( self, port, certfile, keyfile ):
-		"""
-		Parameters:
-		port     (int) -- Port to run the local server on.
-		certfile (str) --
-		keyfile  (str) --
-		"""
-
-		if not certfile or not keyfile:
-			certfile, keyfile = create_localhost_cert()
-
-		self.httpd = server.ThreadingHTTPServer( ( '', port ), localhttp.APIRequestHandler )
-
-		self.httpd.socket = ssl.wrap_socket(
-			self.httpd.socket,
-			certfile = certfile,
-			keyfile = keyfile,
-			server_side = True
-		)
-
-
-	def start( self ):
-		""" Start the local server. """
-
-		print( 'A local HTTPS server will be available under: https://127.0.0.1:%d' % self.httpd.server_port )
-		print( '----------' )
-		self.httpd.serve_forever()
