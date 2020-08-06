@@ -104,7 +104,7 @@ class APIRuleSet:
 		res_headers = add_header_if_new( res_headers, 'Content-Length', content_length )
 		res_headers = add_header_if_new(
 			res_headers, 'Content-Disposition',
-			'attachment; filename*=UTF-8\'\'%s' % quote( filename, safe = '' )
+			"attachment; filename*=UTF-8''%s" % quote( filename, safe = '' )
 		)
 
 		return res_status, res_message, res_headers

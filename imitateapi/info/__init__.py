@@ -2,16 +2,6 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 
 
-def get_version():
-	"""
-	Returns
-	-------
-	str
-	"""
-
-	return '0.2.0'
-
-
 def get_parser():
 	"""
 	Returns
@@ -75,6 +65,19 @@ def get_parser():
 		dest = 'list'
 	)
 	parser.add_argument(
+		'--list-online',
+		action = 'store_true',
+		required = False,
+		help = 'List the APIs available for installation in the online repository.',
+		dest = 'list_online'
+	)
+	parser.add_argument(
+		'--install',
+		required = False,
+		help = 'Install an API file from the repository.',
+		dest = 'install_api'
+	)
+	parser.add_argument(
 		'-v', '--version',
 		action = 'store_true',
 		required = False,
@@ -83,3 +86,24 @@ def get_parser():
 	)
 
 	return parser
+
+
+def get_repository_index_url():
+	"""
+	Returns
+	-------
+	str
+	"""
+
+	# TODO: create an official repository
+	return 'http://localhost:8001/index.json'
+
+
+def get_version():
+	"""
+	Returns
+	-------
+	str
+	"""
+
+	return '0.2.0'
