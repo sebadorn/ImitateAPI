@@ -1,5 +1,5 @@
 # Built-in modules
-import json, shutil, tarfile, urllib.request
+import json, os, shutil, tarfile, urllib.request
 
 # Project modules
 from .. import info
@@ -16,15 +16,16 @@ class APIDownloader:
 		pass
 
 
-	def _download_archive( self, url_archive, callback = None ):
+	def _download_archive( self, api_id, url_archive, callback = None ):
 		"""
 		Parameters:
+		api_id      (str)      --
 		url_archive (str)      --
 		callback    (callable) --
 		"""
 
-		out_file_path = '' # TODO
-		extract_to_dir = '' # TODO
+		extract_to_dir = info.get_user_appdata_dir()
+		out_file_path = os.path.join( extract_to_dir, api_id + '.tar.gz' )
 
 		with open( out_file_path, 'wb' ) as out_file:
 			with urllib.request.urlopen( url_archive ) as response:
@@ -33,10 +34,13 @@ class APIDownloader:
 		with tarfile.open( out_file_path ) as tar:
 			tar.extractall( extract_to_dir )
 
+		os.unlink( out_file_path )
+
 		if callable( callback ):
 			callback()
 
 		# TODO: handle various possible errors, like timeout or 404
+		# TODO: check if file already exists
 		# TODO: be careful uncompressing (members argument?), handle invalid file
 
 
@@ -55,7 +59,7 @@ class APIDownloader:
 			for item in result:
 				if item.get( 'id' ) == api_id:
 					found = True
-					self._download_archive( item.get( 'download' ), callback )
+					self._download_archive( api_id, item.get( 'download' ), callback )
 					break
 
 			if not found:

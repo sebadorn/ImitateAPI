@@ -1,4 +1,7 @@
+# Built-in modules
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from pathlib import Path
+import sys
 
 
 
@@ -97,6 +100,30 @@ def get_repository_index_url():
 
 	# TODO: create an official repository
 	return 'http://localhost:8001/index.json'
+
+
+def get_user_appdata_dir():
+	"""
+	Returns
+	-------
+	str
+	"""
+
+	platform = sys.platform
+	appdata_dir = None
+
+	if platform.startswith( 'linux' ):
+		p = Path( '~/.local/share/imitateapi' )
+		appdata_dir = str( p.expanduser() )
+	elif platform.startswith( 'freebsd' ) or platform.startswith( 'darwin' ):
+		pass # TODO
+	elif platform.startswith( 'win32' ) or platform.startswith( 'cygwin' ):
+		pass # TODO
+
+	if appdata_dir == None:
+		raise Exception( 'Platform not supported: %s' % platform )
+
+	return appdata_dir
 
 
 def get_version():

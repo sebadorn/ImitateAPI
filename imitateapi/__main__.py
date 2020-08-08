@@ -1,4 +1,5 @@
 # Built-in modules
+from pathlib import Path
 import sys
 
 # Project modules
@@ -8,6 +9,21 @@ from . import info
 from .localhttp.localserver import LocalServerHTTP
 from .localhttps.localserver import LocalServerHTTPS
 
+
+
+def _init():
+	"""
+	Initialize required directories and run some checks.
+	"""
+
+	appdata_dir = info.get_user_appdata_dir()
+	p = Path( appdata_dir )
+
+	if not p.is_dir():
+		print( 'Creating local user directory: %s' % appdata_dir )
+		p.mkdir( parents = True, exist_ok = True )
+
+	# TODO: check directory permissions
 
 
 if __name__ == '__main__':
@@ -25,11 +41,14 @@ if __name__ == '__main__':
 	elif args.list_online:
 		apiDownloader = APIDownloader()
 		apiDownloader.print_online()
+	# Download an API
 	elif args.install_api:
+		_init()
 		apiDownloader = APIDownloader()
 		apiDownloader.download( args.install_api )
 	# Simulate an API.
 	else:
+		_init()
 		apiManager = APIManager( args.api_files_dir )
 		api_rules = None
 
