@@ -7,10 +7,15 @@ import mimetypes, os
 
 def add_header_if_new( headers, key, value ):
 	"""
-	Parameters:
-	headers (dict|None)       --
-	key     (str)             --
-	value   (None|number|str) --
+	Parameters
+	----------
+	headers : dict or None
+	key     : str
+	value   : number or str or None
+
+	Returns
+	-------
+	dict
 	"""
 
 	if value is None:
@@ -30,8 +35,13 @@ def get_content_type( filepath ):
 	Get the content type of a file for the Content-Type HTTP header.
 	Based on the MIME type (guessed) and with charset (UTF-8) for text files.
 
-	Parameters:
-	filepath (str) --
+	Parameters
+	----------
+	filepath : str
+
+	Returns
+	-------
+	str
 	"""
 
 	content_type = mimetypes.guess_type( filepath )[0]
@@ -52,8 +62,13 @@ def get_content_type( filepath ):
 
 def get_download_filename( rule_response ):
 	"""
-	Parameters:
-	rule_response (dict) --
+	Parameters
+	----------
+	rule_response : dict
+
+	Returns
+	-------
+	str
 	"""
 
 	filename = 'download'
@@ -73,9 +88,10 @@ class APIRuleSet:
 
 	def __init__( self, api_dir, data ):
 		"""
-		Parameters:
-		api_dir (str)  --
-		data    (dict) --
+		Parameters
+		----------
+		api_dir : str
+		data    : dict
 		"""
 
 		self._dir = api_dir
@@ -84,9 +100,16 @@ class APIRuleSet:
 
 	def _get_response_download( self, rule_response, res_headers ):
 		"""
-		Parameters:
-		rule_response (dict)      --
-		res_headers   (dict|None) --
+		Parameters
+		----------
+		rule_response : dict
+		res_headers   : dict or None
+
+		Returns
+		-------
+		res_status  : int
+		res_message : file-object
+		res_headers : dict
 		"""
 
 		download_file = rule_response.get( 'download' )
@@ -112,9 +135,16 @@ class APIRuleSet:
 
 	def _get_response_include( self, rule_response, res_headers ):
 		"""
-		Parameters:
-		rule_response (dict)      --
-		res_headers   (dict|None) --
+		Parameters
+		----------
+		rule_response : dict
+		res_headers   : dict or None
+
+		Returns
+		-------
+		res_status  : int
+		res_message : str
+		res_headers : dict
 		"""
 
 		include_file = rule_response.get( 'include' )
@@ -137,9 +167,16 @@ class APIRuleSet:
 
 	def _get_response_message( self, rule_response, res_headers ):
 		"""
-		Parameters:
-		rule_response (dict) --
-		res_headers   (dict) --
+		Parameters
+		----------
+		rule_response : dict
+		res_headers   : dict
+
+		Returns
+		-------
+		res_status  : int
+		res_message : str
+		res_headers : dict
 		"""
 
 		res_status = 200
@@ -153,8 +190,13 @@ class APIRuleSet:
 
 	def get_first_matching_rule( self, request_handler ):
 		"""
-		Parameters:
-		request_handler (APIRequestHandler) --
+		Parameters
+		----------
+		request_handler : APIRequestHandler
+
+		Returns
+		-------
+		dict or None
 		"""
 
 		req_method = request_handler.command
@@ -183,8 +225,16 @@ class APIRuleSet:
 
 	def get_request_response( self, request_handler ):
 		"""
-		Parameters:
-		request_handler (APIRequestHandler) -- The request handler instance.
+		Parameters
+		----------
+		request_handler : APIRequestHandler
+			The request handler instance.
+
+		Returns
+		-------
+		res_status  : int
+		res_message : str or file-object or None
+		res_headers : dict or None
 		"""
 
 		res_status = 500

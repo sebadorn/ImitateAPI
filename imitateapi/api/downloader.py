@@ -3,6 +3,7 @@ import json, os, shutil, tarfile, urllib.request
 
 # Project modules
 from .. import info
+from ..logger import Logger
 
 
 
@@ -10,26 +11,27 @@ class APIDownloader:
 
 
 	def __init__( self ):
-		"""
-		"""
-
 		pass
 
 
 	def _download_archive( self, api_id, url_archive, callback = None ):
 		"""
-		Parameters:
-		api_id      (str)      --
-		url_archive (str)      --
-		callback    (callable) --
+		Parameters
+		----------
+		api_id      : str
+		url_archive : str
+		callback    : function, optional
 		"""
 
 		extract_to_dir = info.get_user_appdata_dir()
 		out_file_path = os.path.join( extract_to_dir, api_id + '.tar.gz' )
 
 		with open( out_file_path, 'wb' ) as out_file:
-			with urllib.request.urlopen( url_archive ) as response:
-				shutil.copyfileobj( response, out_file )
+			try:
+				with urllib.request.urlopen( url_archive ) as response:
+					shutil.copyfileobj( response, out_file )
+			except urllib.error.URLError as err:
+				Logger.error( 'Connecting to %s failed.' % url_archive )
 
 		with tarfile.open( out_file_path ) as tar:
 			tar.extractall( extract_to_dir )
@@ -48,9 +50,11 @@ class APIDownloader:
 		"""
 		Download the API file from the URL and save it in the local directory.
 
-		Parameters:
-		api_id   (str)      -- ID of the API to download.
-		callback (callable) --
+		Parameters
+		----------
+		api_id   : str
+			ID of the API to download.
+		callback : function, optional
 		"""
 
 		def find_api_info( result ):
@@ -63,21 +67,27 @@ class APIDownloader:
 					break
 
 			if not found:
-				print( 'ERROR: Could not find API with ID "%s" in repository list.' % api_id )
+				Logger.error( 'Could not find API with ID "%s" in repository list.' % api_id )
 
 		self.list_online( find_api_info )
 
 
 	def list_online( self, callback ):
 		"""
-		Parameters:
-		callback (function) --
+		Parameters
+		----------
+		callback : function
 		"""
 
 		url = info.get_repository_index_url()
 
-		with urllib.request.urlopen( url ) as f:
-			content = f.read()
+		try:
+			with urllib.request.urlopen( url ) as f:
+				content = f.read()
+		except urllib.error.URLError as err:
+			Logger.error( err )
+			Logger.error( 'Connecting to "%s" failed.' % url )
+			return
 
 		# TODO: handle various possible errors, like timeout or 404
 
@@ -87,9 +97,6 @@ class APIDownloader:
 
 
 	def print_online( self ):
-		"""
-		"""
-
 		def print_result( result ):
 			print( 'APIs in the repository:' )
 			print( '-----------------------' )

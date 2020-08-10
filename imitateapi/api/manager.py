@@ -2,6 +2,7 @@
 import json, mimetypes, os, re
 
 # Project modules
+from ..logger import Logger
 from .ruleset import APIRuleSet
 
 
@@ -11,8 +12,10 @@ class APIManager:
 
 	def __init__( self, api_dir ):
 		"""
-		Parameters:
-		api_dir (str) -- Path to the directory where API files are located.
+		Parameters
+		----------
+		api_dir : str
+			Path to the directory where API files are located.
 		"""
 
 		mimetypes.init()
@@ -31,8 +34,14 @@ class APIManager:
 
 	def load_api( self, name ):
 		"""
-		Parameters:
-		name (str) -- Directory name of the API to load.
+		Parameters
+		----------
+		name : str
+			Directory name of the API to load.
+
+		Returns
+		-------
+		APIRuleSet
 		"""
 
 		info = self._available.get( name )
@@ -57,8 +66,13 @@ class APIManager:
 
 	def read_from_dir( self, api_dir ):
 		"""
-		Parameters:
-		api_dir (str) --
+		Parameters
+		----------
+		api_dir : str
+
+		Returns
+		-------
+		list of dicts
 		"""
 
 		api_list = []
@@ -70,7 +84,7 @@ class APIManager:
 					continue
 
 				if entry.name in found_names:
-					print( 'WARNING: API "%s" has already been found and will not be added again.' % entry.name )
+					Logger.warn( 'API "%s" has already been found and will not be added again.' % entry.name )
 					continue
 
 				# Scan __private sub directory.

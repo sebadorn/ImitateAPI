@@ -4,6 +4,7 @@ from io import IOBase
 
 # Project modules
 from .. import info
+from ..logger import Logger
 from .apirequesthandler import APIRequestHandler
 
 
@@ -13,8 +14,10 @@ class LocalServerHTTP:
 
 	def __init__( self, port ):
 		"""
-		Parameters:
-		port (int) -- Port to run the local server on.
+		Parameters
+		----------
+		port : int
+			Port to run the local server on.
 		"""
 
 		self.httpd = server.ThreadingHTTPServer( ( '', port ), APIRequestHandler )
@@ -22,8 +25,9 @@ class LocalServerHTTP:
 
 	def set_api( self, api ):
 		"""
-		Parameters:
-		api (api.APIRuleSet) --
+		Parameters
+		----------
+		api : api.APIRuleSet
 		"""
 
 		self.httpd.sapis_rules = api
@@ -39,4 +43,4 @@ class LocalServerHTTP:
 			self.httpd.serve_forever()
 		except KeyboardInterrupt:
 			print( '\n----------' )
-			print( 'Application has been terminated by user.' )
+			Logger.info( 'Application has been terminated by user.' )

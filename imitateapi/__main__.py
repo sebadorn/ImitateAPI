@@ -6,27 +6,28 @@ import sys
 from .api.manager import APIManager
 from .api.downloader import APIDownloader
 from . import info
+from .logger import Logger
 from .localhttp.localserver import LocalServerHTTP
 from .localhttps.localserver import LocalServerHTTPS
 
 
 
 def _init():
-	"""
-	Initialize required directories and run some checks.
-	"""
+	""" Initialize required directories and run some checks. """
 
 	appdata_dir = info.get_user_appdata_dir()
 	p = Path( appdata_dir )
 
 	if not p.is_dir():
-		print( 'Creating local user directory: %s' % appdata_dir )
+		Logger.info( 'Creating local user directory: %s' % appdata_dir )
 		p.mkdir( parents = True, exist_ok = True )
 
 	# TODO: check directory permissions
 
 
 if __name__ == '__main__':
+	Logger.init()
+
 	parser = info.get_parser()
 	args = parser.parse_args( sys.argv[1:] )
 
@@ -56,7 +57,7 @@ if __name__ == '__main__':
 			print( 'Simulating API: %s' % args.api )
 			api_rules = apiManager.load_api( args.api )
 		else:
-			print( 'No API has been selected.' )
+			Logger.warn( 'No API has been selected.' )
 
 		if args.server == 'https':
 			server = LocalServerHTTPS(

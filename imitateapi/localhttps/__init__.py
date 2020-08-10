@@ -1,12 +1,22 @@
 # Built-in modules
 import os, subprocess, tempfile
 
+# Project modules
+from ..logger import Logger
+
 
 
 def create_localhost_cert():
-	""" Create the SSL certificate for localhost. """
+	"""
+	Create the SSL certificate for localhost.
 
-	print( 'Creating localhost.crt and localhost.key files...' )
+	Returns
+	-------
+	certfile : str
+	keyfile  : str
+	"""
+
+	Logger.info( 'Creating localhost.crt and localhost.key files...' )
 
 	try:
 		configfile = tempfile.NamedTemporaryFile( delete = False )
@@ -34,9 +44,10 @@ def create_localhost_cert():
 			stderr = subprocess.PIPE,
 			universal_newlines = True
 		)
-		print( 'Done.' )
+		Logger.info( 'Done.' )
 	except subprocess.CalledProcessError as err:
-		print( 'openssl error:\n%s' % err.stderr )
+		Logger.error( 'openssl error:\n%s' % err.stderr )
+		return None, None
 
 	if configfile and os.path.exists( configfile.name ):
 		os.unlink( configfile.name )

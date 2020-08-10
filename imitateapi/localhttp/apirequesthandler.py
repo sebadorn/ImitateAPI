@@ -11,9 +11,6 @@ class APIRequestHandler( server.SimpleHTTPRequestHandler ):
 
 
 	def _handle_method( self ):
-		"""
-		"""
-
 		self.server_version = 'ImitateAPI/' + info.get_version()
 
 		if self.server.sapis_rules:
@@ -38,7 +35,9 @@ class APIRequestHandler( server.SimpleHTTPRequestHandler ):
 
 	def _send_file( self, file ):
 		"""
-		file (io.IOBase) --
+		Parameters
+		----------
+		file : io.IOBase
 		"""
 
 		chunk_size = 1 # MB
