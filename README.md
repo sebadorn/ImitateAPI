@@ -6,7 +6,7 @@ NOT INTENDED FOR USE IN PRODUCTION. This application was created with developmen
 ## Requirements
 
 * openssl -- but only if SSL certificates for localhost have to be generated
-* python3 -- version 3.7 or higher
+* python3 -- version 3.6 or higher
 
 
 ## Install

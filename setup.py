@@ -16,7 +16,7 @@ setuptools.setup(
 	license = 'MIT',
 	long_description = long_description,
 	long_description_content_type = 'text/markdown',
-	url = 'https://github.com/sebadorn/imitateapi',
+	url = 'https://github.com/sebadorn/ImitateAPI',
 	packages = setuptools.find_packages(),
 	package_data = {
 		'': ['*.txt']
@@ -27,9 +27,10 @@ setuptools.setup(
 		'License :: OSI Approved :: MIT License',
 		'Operating System :: OS Independent',
 		'Programming Language :: Python :: 3',
+		'Programming Language :: Python :: 3.6',
 		'Programming Language :: Python :: 3.7',
 		'Programming Language :: Python :: 3.8'
 	],
 	keywords = 'api development http https imitate imitation local network server simulate simulation testing',
-	python_requires = '>=3.7',
+	python_requires = '>=3.6',
 )

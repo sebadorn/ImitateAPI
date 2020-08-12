@@ -31,7 +31,7 @@ class APIDownloader:
 				with urllib.request.urlopen( url_archive ) as response:
 					shutil.copyfileobj( response, out_file )
 			except urllib.error.URLError as err:
-				Logger.error( 'Connecting to %s failed.' % url_archive )
+				Logger.error( '[APIDownloader._download_archive] Connecting to %s failed.' % url_archive )
 
 		with tarfile.open( out_file_path ) as tar:
 			tar.extractall( extract_to_dir )
@@ -67,7 +67,7 @@ class APIDownloader:
 					break
 
 			if not found:
-				Logger.error( 'Could not find API with ID "%s" in repository list.' % api_id )
+				Logger.error( '[APIDownloader.download] Could not find API with ID "%s" in repository list.' % api_id )
 
 		self.list_online( find_api_info )
 
@@ -86,7 +86,7 @@ class APIDownloader:
 				content = f.read()
 		except urllib.error.URLError as err:
 			Logger.error( err )
-			Logger.error( 'Connecting to "%s" failed.' % url )
+			Logger.error( '[APIDownloader.list_online] Connecting to "%s" failed.' % url )
 			return
 
 		# TODO: handle various possible errors, like timeout or 404

@@ -23,10 +23,23 @@ class LocalServerHTTPS( LocalServerHTTP ):
 		keyfile  : str
 		"""
 
+		self.httpd = None
+
 		if not certfile or not keyfile:
 			certfile, keyfile = create_localhost_cert()
 
-		self.httpd = server.ThreadingHTTPServer( ( '', port ), APIRequestHandler )
+		if not certfile or not keyfile:
+			Logger.error( '[LocalServerHTTPS.__init__] No certfile and/or no keyfile. Cannot start HTTPS server.' )
+			return
+
+		if hasattr( server, 'ThreadingHTTPServer' ):
+			self.httpd = server.ThreadingHTTPServer( ( '', port ), APIRequestHandler )
+		else:
+			Logger.warn(
+				'http.server.ThreadingHTTPServer not available. '
+				'Using fallback to http.server.HTTPServer instead.'
+			)
+			self.httpd = server.HTTPServer( ( '', port ), APIRequestHandler )
 
 		self.httpd.socket = ssl.wrap_socket(
 			self.httpd.socket,
@@ -38,6 +51,10 @@ class LocalServerHTTPS( LocalServerHTTP ):
 
 	def start( self ):
 		""" Start the local server. """
+
+		if not self.httpd:
+			Logger.error( '[LocalServerHTTPS.start] No HTTPS server running. Exiting.' )
+			return
 
 		print( 'A local HTTPS server will be available under: https://127.0.0.1:%d' % self.httpd.server_port )
 		print( '----------' )
