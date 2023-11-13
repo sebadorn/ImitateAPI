@@ -14,6 +14,13 @@ NOT INTENDED FOR USE IN PRODUCTION. This application was created with developmen
 _[tbd]_
 
 
+## Use
+
+```bash
+python3 -m imitateapi --help
+```
+
+
 ## Resources
 
 * https://blog.anvileight.com/posts/simple-python-http-server/

@@ -1,4 +1,5 @@
 # Files
+*.code-workspace
 *.crt
 *.key
 *.pyc

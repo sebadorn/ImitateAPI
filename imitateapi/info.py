@@ -115,8 +115,13 @@ def get_user_appdata_dir():
 	if platform.startswith( 'linux' ):
 		p = Path( '~/.local/share/imitateapi' )
 		appdata_dir = str( p.expanduser() )
-	elif platform.startswith( 'freebsd' ) or platform.startswith( 'darwin' ):
-		pass # TODO
+	elif platform.startswith( 'freebsd' ):
+		# TODO: Not sure this is the right directory to use.
+		p = Path( '/usr/local/share' )
+		appdata_dir = str( p )
+	elif platform.startswith( 'darwin' ):
+		p = Path( '~/Library/Application Support/imitateapi' )
+		appdata_dir = str( p.expanduser() )
 	elif platform.startswith( 'win32' ) or platform.startswith( 'cygwin' ):
 		pass # TODO
 

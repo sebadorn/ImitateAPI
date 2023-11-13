@@ -26,17 +26,95 @@ class APIManager:
 		in_dir = self.read_from_dir( self._directory )
 
 		for entry in in_dir:
-			self._available[entry.get( 'name' )] = {
-				'loaded': False,
-				'path': entry.get( 'path' )
+			index_path = os.path.join( entry.get( 'path' ), 'index.json' )
+
+			if os.path.isfile( index_path ):
+				subentries = self._extend_from_index( entry )
+
+				for subentry in subentries:
+					self._available[subentry.get( 'name' )] = {
+						'loaded': False,
+						'path': subentry.get( 'path' ),
+						'file': subentry.get( 'file' ),
+						'parent': index_path,
+					}
+			else:
+				self._available[entry.get( 'name' )] = {
+					'loaded': False,
+					'path': entry.get( 'path' ),
+					'parent': None,
+				}
+
+
+	def _extend_from_index( self, entry ):
+		subentries = []
+		file_path = os.path.join( entry.get( 'path' ), 'index.json' )
+
+		with open( file_path ) as f:
+			content = f.read()
+
+		# Allow lines with comments if they start with "//".
+		# Remove those here, so the JSON can be parsed.
+		p = re.compile( '^[\t ]*//.*', re.MULTILINE )
+		content = p.sub( '', content )
+
+		index = json.loads( content )
+		list = index.get( 'variants' )
+
+		for variant in list:
+			subentry = {
+				'name': entry.get( 'name' ) + ':' + variant.get( 'id' ),
+				'path': entry.get( 'path' ),
+				'file': os.path.join( entry.get( 'path' ), variant.get( 'file' ) ),
 			}
+			subentries.append( subentry )
+
+		return subentries
+
+
+	def _handle_index_file( self, info ):
+		api_dict = APIManager.get_json( info.get( 'file' ) )
+
+		if info.get( 'parent' ) is not None:
+			base_dict = APIManager.get_json( info.get( 'parent' ) )
+			base_rules = base_dict.get( 'rules' )
+			info_rules = api_dict.get( 'rules' )
+
+			if base_rules is not None:
+				if info_rules is not None:
+					base_rules.extend( info_rules )
+
+				api_dict['rules'] = base_rules
+
+		rules = APIRuleSet( info.get( 'path' ), api_dict )
+
+		return rules
+
+
+	def _handle_rules_file( self, path_base, file_path ):
+		api_dict = APIManager.get_json( file_path )
+		rules = APIRuleSet( path_base, api_dict )
+
+		return rules
+
+
+	def get_json( file_path ):
+		with open( file_path ) as f:
+			content = f.read()
+
+		# Allow lines with comments if they start with "//".
+		# Remove those here, so the JSON can be parsed.
+		p = re.compile( '^[\t ]*//.*', re.MULTILINE )
+		content = p.sub( '', content )
+
+		return json.loads( content )
 
 
 	def load_api( self, name ):
 		"""
 		Parameters
 		----------
-		name : str
+		name: str
 			Directory name of the API to load.
 
 		Returns
@@ -45,23 +123,15 @@ class APIManager:
 		"""
 
 		info = self._available.get( name )
-		json_file_path = os.path.join( info.get( 'path' ), 'rules.json' )
+		path_base = info.get( 'path' )
+		json_file_path_rules = os.path.join( path_base, 'rules.json' )
 
-		if not os.path.isfile( json_file_path ):
-			raise Exception( '[APIManager.load_api] ERROR: File does not exist: %s' % json_file_path )
-
-		with open( json_file_path ) as f:
-			content = f.read()
-
-		# Allow lines with comments if they start with "//".
-		# Remove those here, so the JSON can be parsed.
-		p = re.compile( '^[\t ]*//.*', re.MULTILINE )
-		content = p.sub( '', content )
-
-		api_dict = json.loads( content )
-		rules = APIRuleSet( info.get( 'path' ), api_dict )
-
-		return rules
+		if info.get( 'file' ) is not None:
+			return self._handle_index_file( info )
+		elif os.path.isfile( json_file_path_rules ):
+			return self._handle_rules_file( path_base, json_file_path_rules )
+		else:
+			raise Exception( '[APIManager.load_api] ERROR: Neither "index.json" nor "rules.json" file exists in %s' % path_base )
 
 
 	def read_from_dir( self, api_dir ):
@@ -115,7 +185,9 @@ class APIManager:
 			max_length = max( max_length, len( key ) )
 
 		format_str = 'API found: %%-%ds (%%s)' % max_length
+		keys = sorted( self._available )
 
-		for key in self._available:
+		for key in keys:
 			entry = self._available.get( key )
-			print( format_str % ( key, entry.get( 'path' ) ) )
+			path = entry.get( 'file' ) or entry.get( 'path' )
+			print( format_str % ( key, path ) )
